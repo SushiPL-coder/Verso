@@ -1,0 +1,55 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- frame -->
+  <path
+    d="M48 88C48 65.9 65.9 48 88 48H164"
+    stroke="#6D6285"
+    stroke-width="14"
+    stroke-linecap="round"
+  />
+  <path
+    d="M48 88V168C48 190.1 65.9 208 88 208H120"
+    stroke="#6D6285"
+    stroke-width="14"
+    stroke-linecap="round"
+  />
+  <!-- selection corner -->
+  <path
+    d="M176 48H208V80"
+    stroke="#5FD7B4"
+    stroke-width="14"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+  <!-- guide lines -->
+  <path
+    d="M200 92V188"
+    stroke="#5FD7B4"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-dasharray="10 12"
+  />
+  <path
+    d="M80 200H188"
+    stroke="#5FD7B4"
+    stroke-width="6"
+    stroke-linecap="round"
+    stroke-dasharray="10 12"
+  />
+  <!-- resize handle -->
+  <rect
+    x="184"
+    y="184"
+    width="24"
+    height="24"
+    fill="#FF6B5D"
+    rx="3"
+  />
+  <!-- V -->
+  <path
+    d="M88 86L128 174L168 86"
+    stroke="#FF6B5D"
+    stroke-width="20"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>

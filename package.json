@@ -1,0 +1,30 @@
+{
+  "name": "verso-editor",
+  "version": "0.4.0",
+  "private": false,
+  "description": "Single-file, zero-dependency visual editor for HTML/CSS — bring your own code, edit visually, get clean code back.",
+  "license": "MIT",
+  "author": "SushiPL-coder",
+  "homepage": "https://sushipl-coder.github.io/verso/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SushiPL-coder/verso.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SushiPL-coder/verso/issues"
+  },
+  "scripts": {
+    "start": "npx --yes serve ."
+  },
+  "keywords": [
+    "html",
+    "css",
+    "visual-editor",
+    "wysiwyg",
+    "no-code",
+    "web-design",
+    "undo-redo",
+    "single-file",
+    "zero-dependency"
+  ]
+}
