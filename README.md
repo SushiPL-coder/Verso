@@ -39,7 +39,8 @@ serialization.
 
 - **Open / Download** real `.html` files (or drag & drop them onto the canvas).
 - **Click to select** any element, with a parent breadcrumb to walk up the tree.
-- **Drag to move**, **corner grip to resize** (with aspect lock), **circle handle to rotate** — directly on the preview.
+- **Drag to move**, **8 resize handles** (corners + edges, shrink or grow from any side, aspect lock), **circle handle to rotate** — directly on the preview. Exact **width/height in px** in the panel.
+- **Copy / paste / duplicate** elements (`Ctrl+C` / `Ctrl+V` / `Ctrl+D`).
 - **Typography:** font family, size, weight, italic, alignment, line-height, letter-spacing, text color.
 - **Box:** background, border (width / style / color), corner radius, opacity, padding, margin.
 - **Double-click to edit text** in place.

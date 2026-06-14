@@ -3,6 +3,13 @@
 All notable changes to this project are documented here.
 This project adheres to a simple, human-readable changelog.
 
+## [0.5.0] - 2026
+### Added
+- Resize from all 8 handles (corners + edges) — shrink and grow from any side,
+  not just bottom-right. Aspect lock applies on corner handles.
+- Copy / paste / duplicate elements: `Ctrl+C` / `Ctrl+V` / `Ctrl+D`, plus a Duplicate button.
+- Keyboard shortcuts now work whether focus is on the canvas or inside the preview.
+
 ## [0.4.0] - 2026
 ### Added
 - Undo / redo with toolbar buttons and `Ctrl+Z` / `Ctrl+Shift+Z` (`Ctrl+Y`).
