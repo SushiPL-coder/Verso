@@ -29,7 +29,7 @@
   .topbar .spacer { flex:1; }
   .group { display:flex; align-items:center; gap:4px; background:var(--chrome-2);
            border:1px solid var(--line); border-radius:8px; padding:3px; }
-  .zlabel { font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-mute); min-width:42px; text-align:center; }
+  .zlabel { font-family:"JetBrains Mono",monospace; font-size:12px; color:var(--ink-mute); min-width:42px; text-align:center; cursor:pointer; }
   .btn { font-family:"Sora",sans-serif; font-size:13px; font-weight:500; color:var(--ink);
          background:var(--chrome-2); border:1px solid var(--line); border-radius:7px;
          padding:7px 12px; cursor:pointer; white-space:nowrap; }
@@ -123,7 +123,9 @@
   input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:15px; height:15px; border-radius:50%;
     background:var(--coral); border:3px solid var(--chrome); cursor:pointer; }
   input[type=range]::-moz-range-thumb{ width:13px; height:13px; border-radius:50%; background:var(--coral); border:3px solid var(--chrome); cursor:pointer; }
-  .insp-actions { display:flex; gap:8px; margin-top:10px; }
+  .insp-actions { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .shape-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .shape-grid .btn { text-align:left; }
 
   .asset-add { display:flex; gap:8px; margin-bottom:12px; }
   .asset-add .num { flex:1; }
@@ -170,9 +172,9 @@
     </div>
     <div class="group" role="group" aria-label="Zoom">
       <button class="btn icon" id="zoomOut" title="Zoom out">−</button>
-      <span class="zlabel" id="zoomLabel">100%</span>
+      <span class="zlabel" id="zoomLabel" title="Reset to 100%">100%</span>
       <button class="btn icon" id="zoomIn" title="Zoom in">+</button>
-      <button class="btn icon" id="zoomFit" title="Fit width">⤢</button>
+      <button class="btn icon" id="zoomFit" title="Fit whole page">⤢</button>
     </div>
     <input type="file" id="fileInput" accept=".html,.htm,text/html" hidden />
     <button class="btn ghost" id="openBtn">Open file</button>
@@ -287,6 +289,12 @@
                 <div class="field"><label>Move X</label><input class="num" type="number" id="posX" step="1" /></div>
                 <div class="field"><label>Move Y</label><input class="num" type="number" id="posY" step="1" /></div>
               </div>
+              <div class="ctl"><label>Layer order</label>
+                <div class="rowctl">
+                  <button class="btn ghost sm" id="frontBtn" style="flex:1">Bring to front</button>
+                  <button class="btn ghost sm" id="backBtn" style="flex:1">Send to back</button>
+                </div>
+              </div>
             </div>
 
             <div class="insp-actions">
@@ -294,6 +302,21 @@
               <button class="btn ghost sm" id="resetTfBtn">Reset transform</button>
               <button class="btn danger sm" id="deleteBtn">Delete</button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHAPES -->
+      <div class="section" id="secShapes">
+        <div class="sec-head"><h2>Shapes</h2><span class="chev">▾</span></div>
+        <div class="sec-body">
+          <div class="shape-grid">
+            <button class="btn ghost sm" data-shape="rect">▭ Rectangle</button>
+            <button class="btn ghost sm" data-shape="round">▢ Rounded</button>
+            <button class="btn ghost sm" data-shape="ellipse">⬭ Ellipse</button>
+            <button class="btn ghost sm" data-shape="line">— Line</button>
+            <button class="btn ghost sm" data-shape="arrow">➔ Arrow</button>
+            <button class="btn ghost sm" data-shape="bubble">▢‿ Bubble</button>
           </div>
         </div>
       </div>
@@ -390,7 +413,7 @@ $("#downloadBtn").onclick=()=>{
 };
 
 /* ------------------------------------------------------------ zoom / panel */
-const clampZoom=(z)=>Math.min(2, Math.max(0.25, z));
+const clampZoom=(z)=>Math.min(2, Math.max(0.1, z));
 function applyZoom(){
   stage.style.transformOrigin="0 0";
   stage.style.transform=`scale(${zoom})`;
@@ -402,9 +425,20 @@ function applyZoom(){
   positionOverlay();
 }
 const setZoom=(z)=>{ zoom=clampZoom(z); applyZoom(); };
+function fitToPage(){
+  if(!doc) return;
+  baseW=Math.max(320, wrap.clientWidth-52);   // lay the page out at the canvas width
+  stage.style.transform="none"; stage.style.width=baseW+"px";
+  fitHeight();
+  const h=parseFloat(stage.style.height)||300;
+  const availH=Math.max(120, wrap.clientHeight-52);
+  zoom=clampZoom(Math.min(1, availH/h));      // shrink until the whole height fits
+  applyZoom();
+}
 $("#zoomIn").onclick =()=>setZoom(zoom+0.1);
 $("#zoomOut").onclick=()=>setZoom(zoom-0.1);
-$("#zoomFit").onclick=()=>{ baseW=Math.max(320, wrap.clientWidth-52); zoom=1; applyZoom(); };
+$("#zoomFit").onclick=fitToPage;
+$("#zoomLabel").onclick=()=>{ baseW=Math.max(320, wrap.clientWidth-52); setZoom(1); };
 $("#togglePanel").onclick=()=>{ work.classList.add("collapsed"); refitWidth(); };
 $("#showPanel").onclick  =()=>{ work.classList.remove("collapsed"); refitWidth(); };
 function refitWidth(){ requestAnimationFrame(()=>{ baseW=Math.max(320, wrap.clientWidth-52); applyZoom(); }); }
@@ -667,6 +701,33 @@ function pasteEl(){
   fitHeight(); applyZoom(); select(node); commit();
 }
 function duplicateEl(){ if(selected && selected!==doc.body){ copyEl(); pasteEl(); } }
+
+/* ------------------------------------------------------------ shapes + z-order */
+function insertNode(html){
+  if(!doc){ ensureDoc(()=>insertNode(html)); return; }
+  const tmp=doc.createElement("div"); tmp.innerHTML=html.trim();
+  const node=tmp.firstElementChild; if(!node) return;
+  reuid(node);
+  const t=(selected && selected!==doc.body && !VOID.has(selected.tagName.toLowerCase())) ? selected : doc.body;
+  t.appendChild(node);
+  fitHeight(); applyZoom(); select(node); commit();
+}
+const SHAPES={
+  rect:    '<div style="width:160px;height:96px;background:#ff6b5d;"></div>',
+  round:   '<div style="width:160px;height:96px;background:#5fd7b4;border-radius:16px;"></div>',
+  ellipse: '<div style="width:120px;height:120px;background:#6d6285;border-radius:50%;"></div>',
+  line:    '<div style="width:180px;height:4px;background:#1f2430;border-radius:2px;"></div>',
+  arrow:   '<div style="width:170px;height:46px;background:#1f2430;clip-path:polygon(0 33%,62% 33%,62% 8%,100% 50%,62% 92%,62% 67%,0 67%);"></div>',
+  bubble:  '<div style="position:relative;display:inline-block;max-width:260px;background:#ffffff;border:2px solid #1f2430;border-radius:14px;padding:14px 18px;color:#1f2430;font-family:system-ui,sans-serif;font-size:15px;">Tekst\u2026<div style="position:absolute;left:26px;bottom:-10px;width:18px;height:18px;background:#ffffff;border-right:2px solid #1f2430;border-bottom:2px solid #1f2430;transform:rotate(45deg);"></div></div>'
+};
+document.querySelectorAll("[data-shape]").forEach(b=>b.onclick=()=>insertNode(SHAPES[b.dataset.shape]));
+
+let zTop=10, zBottom=0;
+function ensureLayerable(el){ if(cstyle(el).position==="static") el.style.position="relative"; }
+function bringFront(){ if(!selected) return; ensureLayerable(selected); selected.style.zIndex=String(++zTop); commit(); }
+function sendBack(){ if(!selected) return; ensureLayerable(selected); selected.style.zIndex=String(--zBottom); commit(); }
+$("#frontBtn").onclick=bringFront;
+$("#backBtn").onclick=sendBack;
 
 /* ------------------------------------------------------------ assets */
 function escapeXml(s){ return String(s).replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c])); }

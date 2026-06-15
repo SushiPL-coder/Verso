@@ -3,6 +3,17 @@
 All notable changes to this project are documented here.
 This project adheres to a simple, human-readable changelog.
 
+## [0.7.0] - 2026
+### Added
+- "Fit whole page" zoom (the ⤢ button): scales the page so it fully fits the
+  visible canvas. Click the percentage to reset to 100%.
+
+## [0.6.0] - 2026
+### Added
+- Shape creator: rectangle, rounded rectangle, ellipse, line, arrow and speech
+  bubble — inserted with inline styles, so they move/resize/recolor like any element.
+- Layer order: "Bring to front" / "Send to back" (z-index) in the element panel.
+
 ## [0.5.0] - 2026
 ### Added
 - Resize from all 8 handles (corners + edges) — shrink and grow from any side,

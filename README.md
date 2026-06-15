@@ -41,11 +41,13 @@ serialization.
 - **Click to select** any element, with a parent breadcrumb to walk up the tree.
 - **Drag to move**, **8 resize handles** (corners + edges, shrink or grow from any side, aspect lock), **circle handle to rotate** — directly on the preview. Exact **width/height in px** in the panel.
 - **Copy / paste / duplicate** elements (`Ctrl+C` / `Ctrl+V` / `Ctrl+D`).
+- **Shapes:** rectangle, rounded rectangle, ellipse, line, arrow, speech bubble.
+- **Layer order:** bring an element to front or send it to back (z-index).
 - **Typography:** font family, size, weight, italic, alignment, line-height, letter-spacing, text color.
 - **Box:** background, border (width / style / color), corner radius, opacity, padding, margin.
 - **Double-click to edit text** in place.
 - **Named asset slots** (e.g. `hero.mp4`, `photo.jpg`): the preview can use an uploaded file or a labelled placeholder, while the exported code keeps the clean filename. Drop an image straight onto an existing picture to swap it.
-- **Zoom** and **collapsible side panel** for small screens.
+- **Zoom**, **fit-whole-page**, and **collapsible side panel** for small screens.
 - **Undo / redo** (`Ctrl+Z` / `Ctrl+Shift+Z`, or the toolbar buttons).
 - Keyboard: `Esc` deselect, `Delete` remove selected element.
 
